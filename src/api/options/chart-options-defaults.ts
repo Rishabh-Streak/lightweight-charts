@@ -1,3 +1,5 @@
+import { isMobile } from '../../gui/support-touch';
+
 import { isRunningOnClientSide } from '../../helpers/is-running-on-client-side';
 
 import { ChartOptionsInternal } from '../../model/chart-model';
@@ -37,6 +39,8 @@ export const chartOptionsDefaults: ChartOptionsInternal = {
 		pressedMouseMove: true,
 		horzTouchDrag: true,
 		vertTouchDrag: true,
+		scrollChartOnDrag: true,
+		trackCrosshairOnlyAfterLongTap: isMobile,
 	},
 	handleScale: {
 		axisPressedMouseMove: {

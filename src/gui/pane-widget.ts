@@ -20,11 +20,11 @@ import { createBoundCanvas, getContext2D, Size } from './canvas-utils';
 import { ChartWidget } from './chart-widget';
 import { MouseEventHandler, Position, TouchMouseEvent } from './mouse-event-handler';
 import { PriceAxisWidget, PriceAxisWidgetSide } from './price-axis-widget';
-import { isMobile, mobileTouch } from './support-touch';
+import { mobileTouch } from './support-touch';
 
 // actually we should check what event happened (touch or mouse)
 // not check current UA to detect "mobile" device
-const trackCrosshairOnlyAfterLongTap = isMobile;
+// const trackCrosshairOnlyAfterLongTap = isMobile;
 
 export interface HitTestResult {
 	source: IPriceDataSource;
@@ -291,7 +291,6 @@ export class PaneWidget implements IDestroyable {
 		if (this._state === null) {
 			return;
 		}
-
 		const model = this._model();
 		const x = event.localX as Coordinate;
 		const y = event.localY as Coordinate;
@@ -310,43 +309,44 @@ export class PaneWidget implements IDestroyable {
 		if (model.timeScale().isEmpty()) {
 			return;
 		}
-
 		const scrollOptions = this._chart.options().handleScroll;
-		if (
-			(!scrollOptions.pressedMouseMove || event.type === 'touch') &&
-			(!scrollOptions.horzTouchDrag && !scrollOptions.vertTouchDrag || event.type === 'mouse')
-		) {
-			return;
-		}
+		if (scrollOptions.scrollChartOnDrag) {
+			if (
+				(!scrollOptions.pressedMouseMove || event.type === 'touch') &&
+				(!scrollOptions.horzTouchDrag && !scrollOptions.vertTouchDrag || event.type === 'mouse')
+			) {
+				return;
+			}
 
-		const priceScale = this._state.defaultPriceScale();
+			const priceScale = this._state.defaultPriceScale();
 
-		if (this._startScrollingPos === null && !this._preventScroll()) {
-			this._startScrollingPos = {
-				x: event.clientX as Coordinate,
-				y: event.clientY as Coordinate,
-			};
-		}
+			if (this._startScrollingPos === null && !this._preventScroll()) {
+				this._startScrollingPos = {
+					x: event.clientX as Coordinate,
+					y: event.clientY as Coordinate,
+				};
+			}
 
-		if (this._startScrollingPos !== null &&
-			(this._startScrollingPos.x !== event.clientX || this._startScrollingPos.y !== event.clientY)) {
-			if (!this._isScrolling) {
+			if (this._startScrollingPos !== null &&
+				(this._startScrollingPos.x !== event.clientX || this._startScrollingPos.y !== event.clientY)) {
+				if (!this._isScrolling) {
+					if (!priceScale.isEmpty()) {
+						model.startScrollPrice(this._state, priceScale, event.localY as Coordinate);
+					}
+
+					model.startScrollTime(event.localX as Coordinate);
+					this._isScrolling = true;
+				}
+			}
+
+			if (this._isScrolling) {
+				// this allows scrolling not default price scales
 				if (!priceScale.isEmpty()) {
-					model.startScrollPrice(this._state, priceScale, event.localY as Coordinate);
+					model.scrollPriceTo(this._state, priceScale, event.localY as Coordinate);
 				}
 
-				model.startScrollTime(event.localX as Coordinate);
-				this._isScrolling = true;
+				model.scrollTimeTo(event.localX as Coordinate);
 			}
-		}
-
-		if (this._isScrolling) {
-			// this allows scrolling not default price scales
-			if (!priceScale.isEmpty()) {
-				model.scrollPriceTo(this._state, priceScale, event.localY as Coordinate);
-			}
-
-			model.scrollTimeTo(event.localX as Coordinate);
 		}
 	}
 
@@ -372,8 +372,8 @@ export class PaneWidget implements IDestroyable {
 
 	public longTapEvent(event: TouchMouseEvent): void {
 		this._longTap = true;
-
-		if (this._startTrackPoint === null && trackCrosshairOnlyAfterLongTap) {
+		const scrollOptions = this._chart.options().handleScroll;
+		if (this._startTrackPoint === null && scrollOptions.trackCrosshairOnlyAfterLongTap) {
 			const point: Point = { x: event.localX as Coordinate, y: event.localY as Coordinate };
 			this._startTrackingMode(point, point);
 		}
@@ -385,8 +385,8 @@ export class PaneWidget implements IDestroyable {
 		}
 
 		this._state.model().setHoveredSource(null);
-
-		if (!isMobile) {
+		const scrollOptions = this._chart.options().handleScroll;
+		if (!scrollOptions.trackCrosshairOnlyAfterLongTap) {
 			this._clearCrosshairPosition();
 		}
 	}
@@ -672,11 +672,13 @@ export class PaneWidget implements IDestroyable {
 	}
 
 	private _preventCrosshairMove(): boolean {
-		return trackCrosshairOnlyAfterLongTap && this._startTrackPoint === null;
+		const scrollOptions = this._chart.options().handleScroll;
+		return scrollOptions.trackCrosshairOnlyAfterLongTap && this._startTrackPoint === null;
 	}
 
 	private _preventScroll(): boolean {
-		return trackCrosshairOnlyAfterLongTap && this._longTap || this._startTrackPoint !== null;
+		const scrollOptions = this._chart.options().handleScroll;
+		return scrollOptions.trackCrosshairOnlyAfterLongTap && this._longTap || this._startTrackPoint !== null;
 	}
 
 	private _correctXCoord(x: Coordinate): Coordinate {

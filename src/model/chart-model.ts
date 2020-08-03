@@ -32,6 +32,8 @@ export interface HandleScrollOptions {
 	pressedMouseMove: boolean;
 	horzTouchDrag: boolean;
 	vertTouchDrag: boolean;
+	scrollChartOnDrag: boolean;
+	trackCrosshairOnlyAfterLongTap: boolean;
 }
 
 export interface HandleScaleOptions {
