@@ -16,6 +16,7 @@ Time scale (or time axis) is a horizontal scale at the bottom of the chart that 
 |`visible`|`boolean`|`true`|If true, the time scale is shown on a chart|
 |`timeVisible`|`boolean`|`false`|If true, the time is shown on the time scale and in the vertical crosshair label|
 |`secondsVisible`|`boolean`|`true`|If true, seconds are shown on the label of the crosshair vertical line in `hh:mm:ss` format on intraday intervals|
+|`shiftVisibleRangeOnNewBar`|`boolean`|`true`|If true, the visible range is shifted by the number of new bars when new bars are added (note that this only applies when the last bar is visible)|
 |`tickMarkFormatter`|`(TimePoint, TickMarkType, locale) => string` &#124; `undefined`|`undefined`|Allows to override the tick marks formatter (see below)|
 
 ### Tick marks formatter
@@ -164,6 +165,28 @@ Returns [Time](./time.md) of a bar that is located on the passed coordinate or `
 
 ```js
 chart.timeScale().coordinateToTime(42);
+```
+
+### logicalToCoordinate
+
+Converts a logical index to the local `x` coordinate.
+The argument is the logical index that needs to be converted into a coordinate.
+
+Returns the `x` coordinate of the logical position or `null` if the chart doesn't have data.
+
+```js
+chart.timeScale().logicalToCoordinate(10);
+```
+
+### coordinateToLogical
+
+Converts the `x` coordinate to a logical index.
+The argument is the `x` coordinate that needs to be converted into a logical index.
+
+Returns a logical index that is located on the passed coordinate or `null` if the chart doesn't have data.
+
+```js
+chart.timeScale().coordinateToLogical(42);
 ```
 
 ### applyOptions()

@@ -15,11 +15,14 @@ export class SeriesLinePaneView extends LinePaneViewBase<'Line', LineItem> {
 		super(series, model);
 	}
 
-	public renderer(height: number, width: number): IPaneRenderer {
-		this._makeValid();
+	public renderer(height: number, width: number): IPaneRenderer | null {
+		if (!this._series.visible()) {
+			return null;
+		}
 
 		const lineStyleProps = this._series.options();
 
+		this._makeValid();
 		const data: PaneRendererLineData = {
 			items: this._items,
 			lineColor: lineStyleProps.color,
@@ -27,6 +30,7 @@ export class SeriesLinePaneView extends LinePaneViewBase<'Line', LineItem> {
 			lineType: lineStyleProps.lineType,
 			lineWidth: lineStyleProps.lineWidth,
 			visibleRange: this._itemsVisibleRange,
+			barWidth: this._model.timeScale().barSpacing(),
 		};
 
 		this._lineRenderer.setData(data);

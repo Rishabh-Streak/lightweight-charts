@@ -180,16 +180,13 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 
 		this._timeScaleApi.destroy();
 		this._chartWidget.destroy();
-		delete this._chartWidget;
-		this._seriesMap.forEach((series: Series, api: SeriesApi<SeriesType>) => {
-			api.destroy();
-		});
+
 		this._seriesMap.clear();
 		this._seriesMapReversed.clear();
+
 		this._clickedDelegate.destroy();
 		this._crosshairMovedDelegate.destroy();
 		this._dataLayer.destroy();
-		delete this._dataLayer;
 	}
 
 	public resize(width: number, height: number, forceRepaint?: boolean): void {
@@ -307,9 +304,9 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 	public priceScale(priceScaleId?: string): IPriceScaleApi {
 		if (priceScaleId === undefined) {
 			warn('Using ChartApi.priceScale() method without arguments has been deprecated, pass valid price scale id instead');
+			priceScaleId = this._chartWidget.model().defaultVisiblePriceScaleId();
 		}
 
-		priceScaleId = priceScaleId || this._chartWidget.model().defaultVisiblePriceScaleId();
 		return new PriceScaleApi(this._chartWidget, priceScaleId);
 	}
 

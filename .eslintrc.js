@@ -19,7 +19,7 @@ module.exports = {
 		'eslint:recommended',
 	],
 	parserOptions: {
-		ecmaVersion: 2017,
+		ecmaVersion: 2019,
 		sourceType: 'module',
 	},
 	overrides: [
@@ -43,6 +43,12 @@ module.exports = {
 				// this option sets a specific tab width for your code
 				// https://github.com/eslint/eslint/blob/master/docs/rules/indent.md
 				indent: ['error', 'tab', { SwitchCase: 1, VariableDeclarator: 1 }],
+
+				// disallow creation of functions within loops
+				'no-loop-func': 'error',
+
+				// disallow variable declarations from shadowing variables declared in the outer scope
+				'no-shadow': 'error',
 
 				// disallow use of undeclared variables unless mentioned in a /*global */ block
 				'no-undef': 'error',
@@ -195,10 +201,12 @@ module.exports = {
 					},
 				],
 				'@typescript-eslint/no-invalid-void-type': 'error',
+				'@typescript-eslint/no-loop-func': 'error',
 				'@typescript-eslint/no-namespace': 'off',
 				'@typescript-eslint/no-non-null-assertion': 'error',
 				'@typescript-eslint/no-parameter-properties': 'error',
 				'@typescript-eslint/no-require-imports': 'off',
+				'@typescript-eslint/no-shadow': 'error',
 				'@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
 				'@typescript-eslint/no-unnecessary-qualifier': 'error',
 				'@typescript-eslint/no-unnecessary-type-arguments': 'off',
@@ -397,9 +405,6 @@ module.exports = {
 		// disallow unnecessary nested blocks
 		'no-lone-blocks': 'error',
 
-		// disallow creation of functions within loops
-		'no-loop-func': 'error',
-
 		// disallow use of multiple spaces
 		'no-multi-spaces': 'error',
 
@@ -517,9 +522,6 @@ module.exports = {
 		strict: 'off',
 
 		// vars
-
-		// disallow variable declarations from shadowing variables declared in the outer scope
-		'no-shadow': 'error',
 
 		// disallow initializing variables to `undefined`
 		'no-undef-init': 'error',
@@ -655,6 +657,9 @@ module.exports = {
 			},
 		],
 
+		'unicorn/empty-brace-spaces': ['error'],
 		'unicorn/filename-case': ['error', { case: 'kebabCase' }],
+		'unicorn/no-array-push-push': ['error'],
+		'unicorn/prefer-date-now': ['error'],
 	},
 };

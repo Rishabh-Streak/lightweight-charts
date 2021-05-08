@@ -13,10 +13,14 @@ import { BarsPaneViewBase } from './bars-pane-view-base';
 export class SeriesCandlesticksPaneView extends BarsPaneViewBase<'Candlestick', CandlestickItem> {
 	private readonly _renderer: PaneRendererCandlesticks = new PaneRendererCandlesticks();
 
-	public renderer(height: number, width: number): IPaneRenderer {
-		this._makeValid();
+	public renderer(height: number, width: number): IPaneRenderer | null {
+		if (!this._series.visible()) {
+			return null;
+		}
 
 		const candlestickStyleProps = this._series.options();
+
+		this._makeValid();
 		const data: PaneRendererCandlesticksData = {
 			bars: this._items,
 			barSpacing: this._model.timeScale().barSpacing(),

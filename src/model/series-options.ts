@@ -62,6 +62,8 @@ export interface LineStyleOptions {
 	lineType: LineType;
 	crosshairMarkerVisible: boolean;
 	crosshairMarkerRadius: number;
+	crosshairMarkerBorderColor: string;
+	crosshairMarkerBackgroundColor: string;
 }
 
 export interface AreaStyleOptions {
@@ -73,6 +75,8 @@ export interface AreaStyleOptions {
 	lineType: LineType;
 	crosshairMarkerVisible: boolean;
 	crosshairMarkerRadius: number;
+	crosshairMarkerBorderColor: string;
+	crosshairMarkerBackgroundColor: string;
 }
 
 export interface HistogramStyleOptions {
@@ -183,7 +187,8 @@ export interface SeriesOptionsCommon {
 	 * @internal
 	 */
 	seriesLastValueMode?: PriceAxisLastValueMode;
-
+	/** Visibility of series. */
+	visible: boolean;
 	/** Visibility of the price line. Price line is a horizontal line indicating the last price of the series */
 	priceLineVisible: boolean;
 	/** Enum of possible modes of priceLine source */

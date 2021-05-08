@@ -22,7 +22,12 @@ export class SeriesPriceAxisView extends PriceAxisView {
 		axisRendererData.visible = false;
 		paneRendererData.visible = false;
 
+		if (!this._source.visible()) {
+			return;
+		}
+
 		const seriesOptions = this._source.options();
+
 		const showSeriesLastValue = seriesOptions.lastValueVisible;
 
 		const showSymbolLabel = this._source.title() !== '';
